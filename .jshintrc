@@ -1,0 +1,15 @@
+{
+    "maxerr"   : 50,
+    "undef"    : true,
+    "unused"   : true,
+    "strict"   : true,
+    "browser"  : true,
+    "debug"    : true,
+    "jquery"   : true,
+    "devel"    : true,
+    "smarttabs": true,
+    "trailing" : true,
+    "node"     : true,
+    "esnext"   : true,
+    "predef"   : ["angular", "_", "moment"]
+}

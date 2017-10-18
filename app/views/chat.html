@@ -1,0 +1,97 @@
+
+<style>
+body {
+    /*background-image: url('https://static.pexels.com/photos/34950/pexels-photo.jpg');*/
+    /*background-size:cover;*/
+}
+.bubble {
+    border: 1px solid;
+    border-radius: 12px;
+    /*white-space: pre;*/
+    padding:4px 7px 4px 7px;
+    margin: 4px;
+    font-size: 120%;
+}
+
+.bubble.bubble-me {
+    border-color:#1085f9;
+    background-color:#1085f9;
+    color:white;
+}
+
+.bubble.bubble-other {
+    border-color:lightgray;
+    background-color:lightgray;
+    color:black;
+}
+
+.bubble.bubble-media {
+    border-color:none;
+    background-color:none;
+    padding:0px 0px 0px 0px;
+    overflow: hidden;
+}
+
+.time-tag {
+    font-size:70%;
+    color:gray;
+    padding-left: 7px;
+    padding-right: 7px;
+    margin-top:   -2px;
+    margin-bottom: 4px;
+}
+</style>
+
+<div ng-cloak ng-if="$root.auth" class="container">
+
+    <div id="chat" class="row" style="position:fixed;top:0px;right:0px;left:0px;bottom:50px;overflow-y:scroll" >
+        <div class="col-xs-12" style="height:400px;"></div>
+        <div class="col-xs-12" ng-repeat="msg in chatCtrl.messages track by msg._id">
+            <div ng-class="{ 'pull-left': !msg.me, 'pull-right': msg.me }">
+                <div class="bubble" ng-class="{ 'bubble-other': !msg.me, 'bubble-me': msg.me, 'bubble-media': msg.media }" title="{{chatCtrl.displayTime(msg.date)}}">
+                    <span ng-if="::!msg.media">{{msg.text}}</span>
+                    <a    ng-if=":: msg.media" ng-href="{{::msg.text}}" target="pict">
+                        <img ng-src="{{::msg.text}}" style="max-height:300px"></a>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="time-tag" ng-class="{ 'pull-left': !msg.me, 'pull-right': msg.me }">{{chatCtrl.displayTime(msg.date)}}</div>
+
+        </div>
+    </div>
+
+    <div class="row" style="position:fixed;height:45px;right:0px;left:0px;bottom:2px;">
+        <div class="col-xs-12">
+            <form ng-submit="chatCtrl.post(text); text='';" autocomplete="off">
+            <input autocomplete="false" name="hidden" type="text" style="display:none;">
+            <div class="input-group">
+                <span class="input-group-btn dropup">
+                    <button class="btn btn-lg btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <button class="btn btn-lg btn-default" type="button" ng-click="chatCtrl.selectPhoto()">
+                        <i class="fa fa-camera" aria-hidden="true"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" ng-click="chatCtrl.disconnect()"><i class="fa fa-user-times" aria-hidden="true"></i> Disconnect</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#" ng-click="chatCtrl.deleteAll()"><i class="fa fa-times"></i> Delete all</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#" ng-click="chatCtrl.load()"><i class="fa fa-refresh" ng-class="{'fa-spin':chatCtrl.loading}"></i> Refresh</a></li>
+                    </ul>
+                </span>
+
+                <input type="text" autocomplete="off" ng-model="text" class="form-control input-lg" placeholder="Type text...">
+
+                <span class="input-group-btn">
+                    <button class="btn btn-lg" ng-class="{ 'btn-success': !$root.auth, 'btn-primary':$root.auth }" type="submit">
+                        <i ng-hide="chatCtrl.loading" class="fa fa-arrow-circle-up" ></i>
+                        <i ng-show="chatCtrl.loading" class="fa fa-refresh fa-spin"></i>
+                    </button>
+                </span>
+            </div><!-- /input-group -->
+            </form>
+        </div><!-- /.col-lg-6 -->
+    </div>
+</div>

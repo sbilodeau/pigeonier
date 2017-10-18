@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="/app/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/app/libs/bootstrap/dist/css/bootstrap.min.css">
+    <script src="/app/libs/jquery/dist/jquery.min.js"></script>
+    <script src="/app/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/app/libs/angular/angular.min.js"></script>
+    <script src="/app/libs/angular-route/angular-route.js"></script>
+    <script src="/app/libs/angular-cookies/angular-cookies.min.js"></script>
+    <script src="/app/libs/moment/min/moment.min.js"></script>
+    <script src="/app/libs/lodash/dist/lodash.min.js"></script>
+    <script src="/app/app.js"></script>
+    <script src="/app/routes.js"></script>
+    <script src="/app/views/home.js"></script>
+    <script src="/app/views/chat.js"></script>
+    <script>
+    document.addEventListener('touchmove', function(event) {
+        event = event.originalEvent || event;
+
+        if(event.scale > 1) {
+            event.preventDefault(); }
+        }, false);
+    </script>
+</head>
+<body ng-cloak class="ltr">
+
+    <ng-view></ng-view>
+
+</body>
+</html>
+<!-- -->
