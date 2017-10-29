@@ -1,7 +1,7 @@
 (function() { 'use strict';
     var app = angular.module('app');
 
-    app.controller('chatCtrl', ['$scope', '$route', '$http', '$location', '$interval', function($scope, $route, $http, $location, $interval){
+    app.controller('chatCtrl', ['$scope', '$route', '$http', '$location', '$interval', '$sce', function($scope, $route, $http, $location, $interval, $sce){
 
         var ctrl = this;
         var refreshTimer = null;
@@ -73,6 +73,7 @@
                 ctrl.messages = _(res.data).map(function(m){
                     m.date = new Date(m.date);
                     m.media = isImage(m.text);
+                    m.html  = toHtml(m.text);
                     return m;
 
                 }).sortBy('date').value();
@@ -188,6 +189,51 @@
             });
         }
 
+        //====================================
+        //
+        //====================================
+        function toHtml(text) {
+
+            var lines = (text||'').split('\n');
+
+            for(var l in lines) {
+
+                var words = lines[l].split(' ');
+
+                for(var w in words) {
+
+                    if(isUrl(words[w])){
+                        var link = $('<a target="_blank">');
+
+                        link.attr('href', words[w]);
+
+                        if(isImage(words[w])) {
+                            var img = $('<img style="max-height:350px">');
+                            img.attr('src', words[w]);
+                            link.append(img);
+                        }
+                        else {
+                            link.text(words[w]);
+                        }
+
+                        words[w] = $('<div>').append(link).html();
+                    }
+                }
+
+                lines[l] = words.join(' ');
+            }
+
+            return $sce.trustAsHtml(lines.join('<br>'));
+        }
+
+        var urlRe = /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/;
+
+        //====================================
+        //
+        //====================================
+        function isUrl(text) {
+            return urlRe.test(text||'');
+        }
         //====================================
         //
         //====================================

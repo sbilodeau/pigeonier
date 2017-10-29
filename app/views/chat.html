@@ -13,6 +13,10 @@ body {
     font-size: 120%;
 }
 
+.bubble a {
+    color:inherit;
+}
+
 .bubble.bubble-me {
     border-color:#1085f9;
     background-color:#1085f9;
@@ -49,9 +53,7 @@ body {
         <div class="col-xs-12" ng-repeat="msg in chatCtrl.messages track by msg._id">
             <div ng-class="{ 'pull-left': !msg.me, 'pull-right': msg.me }">
                 <div class="bubble" ng-class="{ 'bubble-other': !msg.me, 'bubble-me': msg.me, 'bubble-media': msg.media }" title="{{chatCtrl.displayTime(msg.date)}}">
-                    <span ng-if="::!msg.media">{{msg.text}}</span>
-                    <a    ng-if=":: msg.media" ng-href="{{::msg.text}}" target="pict">
-                        <img ng-src="{{::msg.text}}" style="max-height:350px"></a>
+                    <span ng-bind-html="::msg.html"></span>
                 </div>
             </div>
             <div class="clearfix"></div>
