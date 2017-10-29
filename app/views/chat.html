@@ -6,9 +6,9 @@ body {
 }
 .bubble {
     border: 1px solid;
-    border-radius: 12px;
+    border-radius: 16px;
     /*white-space: pre;*/
-    padding:4px 7px 4px 7px;
+    padding:4px 14px 4px 14px;
     margin: 4px;
     font-size: 120%;
 }
@@ -51,7 +51,7 @@ body {
                 <div class="bubble" ng-class="{ 'bubble-other': !msg.me, 'bubble-me': msg.me, 'bubble-media': msg.media }" title="{{chatCtrl.displayTime(msg.date)}}">
                     <span ng-if="::!msg.media">{{msg.text}}</span>
                     <a    ng-if=":: msg.media" ng-href="{{::msg.text}}" target="pict">
-                        <img ng-src="{{::msg.text}}" style="max-height:300px"></a>
+                        <img ng-src="{{::msg.text}}" style="max-height:350px"></a>
                 </div>
             </div>
             <div class="clearfix"></div>
