@@ -27,7 +27,7 @@
         //
         //====================================
         function isImage(text){
-            return /^http[s]?:\/\/.*\.(jpg|jpeg|png)$/.test((text||''));
+            return /^http[s]?:\/\/.*\.(jpg|jpeg|png|svg|gif)$/.test((text||''));
         }
 
         //====================================
@@ -64,6 +64,8 @@
 
             ctrl.loading = true;
 
+            var msgCount = (ctrl.messages||[]).length;
+
             testAuthentication().then(function(){
 
                 return $http.get('/api/messages', { headers: { authorization : $scope.$root.auth.token } });
@@ -73,7 +75,6 @@
                 ctrl.messages = _(res.data).map(function(m){
                     m.date = new Date(m.date);
                     m.media = isImage(m.text);
-                    m.html  = toHtml(m.text);
                     return m;
 
                 }).sortBy('date').value();
@@ -85,7 +86,10 @@
                 return testAuthentication();
 
             }).finally(function(){
-                autoscroll();
+
+                if(msgCount!=(ctrl.messages||[]).length)
+                    autoscroll();
+
                 delete ctrl.loading;
             });
         }
@@ -189,51 +193,6 @@
             });
         }
 
-        //====================================
-        //
-        //====================================
-        function toHtml(text) {
-
-            var lines = (text||'').split('\n');
-
-            for(var l in lines) {
-
-                var words = lines[l].split(' ');
-
-                for(var w in words) {
-
-                    if(isUrl(words[w])){
-                        var link = $('<a target="_blank">');
-
-                        link.attr('href', words[w]);
-
-                        if(isImage(words[w])) {
-                            var img = $('<img style="max-height:350px">');
-                            img.attr('src', words[w]);
-                            link.append(img);
-                        }
-                        else {
-                            link.text(words[w]);
-                        }
-
-                        words[w] = $('<div>').append(link).html();
-                    }
-                }
-
-                lines[l] = words.join(' ');
-            }
-
-            return $sce.trustAsHtml(lines.join('<br>'));
-        }
-
-        var urlRe = /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/;
-
-        //====================================
-        //
-        //====================================
-        function isUrl(text) {
-            return urlRe.test(text||'');
-        }
         //====================================
         //
         //====================================

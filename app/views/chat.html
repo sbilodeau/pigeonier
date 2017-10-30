@@ -11,10 +11,16 @@ body {
     padding:4px 14px 4px 14px;
     margin: 4px;
     font-size: 120%;
+    max-width:350px;
 }
 
 .bubble a {
     color:inherit;
+}
+
+.bubble img {
+    max-height:350px;
+    max-width:350px;
 }
 
 .bubble.bubble-me {
@@ -52,20 +58,18 @@ body {
         <div class="col-xs-12" style="height:400px;"></div>
         <div class="col-xs-12" ng-repeat="msg in chatCtrl.messages track by msg._id">
             <div ng-class="{ 'pull-left': !msg.me, 'pull-right': msg.me }">
-                <div class="bubble" ng-class="{ 'bubble-other': !msg.me, 'bubble-me': msg.me, 'bubble-media': msg.media }" title="{{chatCtrl.displayTime(msg.date)}}">
-                    <span ng-bind-html="::msg.html"></span>
+                <div class="bubble" ng-class="{ 'bubble-other': !msg.me, 'bubble-me': msg.me, 'bubble-media': msg.media }">
+                    <span ng-bind-html="::msg.text|toHtml"></span>
                 </div>
             </div>
             <div class="clearfix"></div>
-            <div class="time-tag" ng-class="{ 'pull-left': !msg.me, 'pull-right': msg.me }">{{chatCtrl.displayTime(msg.date)}}</div>
-
+            <div class="time-tag" ng-class="{ 'pull-left': !msg.me, 'pull-right': msg.me }">{{msg.date|moment:'calendar'}}</div>
         </div>
     </div>
 
     <div class="row" style="position:fixed;height:45px;right:0px;left:0px;bottom:2px;">
         <div class="col-xs-12">
             <form ng-submit="chatCtrl.post(text); text='';" autocomplete="off">
-            <input autocomplete="false" name="hidden" type="text" style="display:none;">
             <div class="input-group">
                 <span class="input-group-btn dropup">
                     <button class="btn btn-lg btn-default dropdown-toggle" type="button" data-toggle="dropdown">
