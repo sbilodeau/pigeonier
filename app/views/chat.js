@@ -56,6 +56,8 @@
 
                 }).sortBy('date').value();
 
+                $scope.date = new Date();
+
             }).catch(on403).catch(console.error).finally(function(){
 
                 if(msgCount!=(ctrl.messages||[]).length)

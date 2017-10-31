@@ -91,7 +91,7 @@ body {
                     <i ng-show="chatCtrl.loading" class="fa fa-refresh fa-spin"></i>
                 </button>
 
-                <textarea autocomplete="off" style="height:{{inputHeight()}}px" rows="1"  ng-model="text" class="form-control input-lg" onfocus="window.keepFocus=null" onblur="if(window.keepFocus) { event.target.focus(); } window.keepFocus=null;" placeholder="Type text..."></textarea>
+                <textarea autocomplete="off" style="height:{{inputHeight()}}px" rows="1"  ng-model="text" class="form-control input-lg" onfocus="window.keepFocus=null" onblur="if(window.keepFocus) { event.target.focus(); } window.keepFocus=null;" placeholder="Last refresh {{(date|moment:'format':'H:mm:ss')||'never'}}"></textarea>
 
             </div><!-- /input-group -->
 
