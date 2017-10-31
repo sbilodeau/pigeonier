@@ -1,7 +1,7 @@
 (function() { 'use strict';
     var app = angular.module('app');
 
-    app.controller('homeCtrl', ['$scope', '$route', '$http', '$location', '$window', function($scope, $route, $http, $location, $window){
+    app.controller('homeCtrl', ['$scope', '$route', '$http', '$location', '$window', 'auth', function($scope, $route, $http, $location, $window, auth){
 
         var homeCtrl = this;
 
@@ -10,6 +10,10 @@
         homeCtrl.submit = submit;
 
         $scope.$applyAsync(focus);
+
+        testAuthentication().then(function(){
+            $location.url('/chat');
+        })
 
         //====================================
         //
@@ -37,16 +41,18 @@
         //====================================
         //
         //====================================
-        function authenticate(pin) {
+        function authenticate(rawtext) {
 
-            pin = (pin||'').replace(/^\s+/, '').replace(/\s+$/, '').toLowerCase();
+            rawtext = (rawtext||'').replace(/^\s+/, '').replace(/\s+$/, '').toLowerCase();
+
+            var parts = rawtext.split('/');
+
+            var pin    = parts[0];
+            var option = parts[1];
 
             return $http.post('/api/authentication', { pin: pin }).then(function(res){
 
-                $scope.$root.auth = {
-                    pin: pin,
-                    token: res.data.token
-                };
+                auth.set({ token: res.data.token }, { persist : option=='save' });
 
             }).catch(function(err){
 
@@ -54,6 +60,13 @@
                 throw err;
 
             });
+        }
+
+        //====================================
+        //
+        //====================================
+        function testAuthentication() {
+            return $http.get('/api/authentication', { timeout: 10000 });
         }
 
         //====================================

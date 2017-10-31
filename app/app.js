@@ -9,7 +9,7 @@
 
     }]);
 
-	app.factory('authenticationHttpIntercepter', ["$rootScope", function($rootScope) {
+	app.factory('authenticationHttpIntercepter', ["auth", function(auth) {
 
 		return {
 			request: function(config) {
@@ -24,9 +24,9 @@
 
 				//Add token to http headers
 
-                if($rootScope.auth && $rootScope.auth.token) {
+                if(auth.get() && auth.get().token) {
                     config.headers = angular.extend(config.headers||{}, {
-                        Authorization : $rootScope.auth.token
+                        Authorization : auth.get().token
                     });
                 }
 

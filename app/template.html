@@ -3,7 +3,13 @@
 
 <head>
     <base href="/">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--<meta name="viewport" content="initial-scale=1.0, user-scalable=0">-->
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=device-dpi"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
     <link rel="stylesheet" href="/app/libs/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/app/libs/bootstrap/dist/css/bootstrap.min.css">
     <script src="/app/libs/jquery/dist/jquery.min.js"></script>
@@ -18,6 +24,7 @@
     <script src="/app/routes.js"></script>
     <script src="/app/filters/to-html.js"></script>
     <script src="/app/filters/moment.js"></script>
+    <script src="/app/services/auth.js"></script>
     <script src="/app/views/home.js"></script>
     <script src="/app/views/chat.js"></script>
     <script>
@@ -30,9 +37,7 @@
     </script>
 </head>
 <body ng-cloak class="ltr">
-
     <ng-view></ng-view>
-
 </body>
 </html>
 <!-- -->
