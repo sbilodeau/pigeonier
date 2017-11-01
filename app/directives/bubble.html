@@ -1,0 +1,20 @@
+<div>
+    <div class="bubble {{msg.type}}" ng-class="{ me: msg.me }">
+
+        <span ng-switch="::msg.type">
+            <span ng-switch-when="image">
+                <a ng-href="{{msg.text}}" target="pic">
+                    <img ng-src="{{msg.text}}">
+                </a>
+            </span>
+            <span ng-switch-when="video">
+                <video controls>
+                    <source ng-src="{{msg.text}}">
+                </video>
+            </span>
+            <span ng-switch-default ng-bind-html="::toHtml(msg.text)"></span>
+        </span>
+
+    </div>
+    <div class="time-tag" ng-class="{ me: msg.me }">{{msg.date|moment:'calendar'}}</div>
+</div>

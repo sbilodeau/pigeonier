@@ -5,13 +5,33 @@ body {
     /*background-size:cover;*/
 }
 .bubble {
-    border: 1px solid;
+    float: left;
     border-radius: 16px;
+    overflow: hidden;
+    margin: 2px
+}
+
+.bubble.me {
+    float: right;
+}
+
+.bubble.text {
+    border: 1px solid;
+
     /*white-space: pre;*/
     padding:4px 14px 4px 14px;
     margin: 4px;
     font-size: 120%;
     max-width:350px;
+    border-color:lightgray;
+    background-color:lightgray;
+    color:black;
+}
+
+.bubble.text.me {
+    border-color:#1085f9;
+    background-color:#1085f9;
+    color:white;
 }
 
 .bubble a {
@@ -23,32 +43,22 @@ body {
     max-width:350px;
 }
 
-.bubble.bubble-me {
-    border-color:#1085f9;
-    background-color:#1085f9;
-    color:white;
-}
-
-.bubble.bubble-other {
-    border-color:lightgray;
-    background-color:lightgray;
-    color:black;
-}
-
-.bubble.bubble-media {
-    border-color:none;
-    background-color:none;
-    padding:0px 0px 0px 0px;
-    overflow: hidden;
+.bubble video {
+    max-height:350px;
+    max-width:350px;
 }
 
 .time-tag {
+    clear: both;
     font-size:70%;
     color:gray;
     padding-left: 7px;
     padding-right: 7px;
     margin-top:   -2px;
     margin-bottom: 4px;
+}
+.time-tag.me {
+    text-align: right;
 }
 </style>
 
@@ -57,13 +67,7 @@ body {
     <div id="chat" class="row" style="position:fixed;top:0px;right:0px;left:0px;bottom:{{inputHeight()+10}}px;overflow-y: scroll;-webkit-overflow-scrolling: touch;" >
         <div class="col-xs-12" style="height:400px;"></div>
         <div class="col-xs-12" ng-repeat="msg in chatCtrl.messages track by msg._id">
-            <div ng-class="{ 'pull-left': !msg.me, 'pull-right': msg.me }">
-                <div class="bubble" ng-class="{ 'bubble-other': !msg.me, 'bubble-me': msg.me, 'bubble-media': msg.media }">
-                    <span ng-bind-html="::msg.text|toHtml"></span>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-            <div class="time-tag" ng-class="{ 'pull-left': !msg.me, 'pull-right': msg.me }">{{msg.date|moment:'calendar'}}</div>
+            <bubble message="msg"></bubble>
         </div>
     </div>
 

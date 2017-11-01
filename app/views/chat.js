@@ -34,13 +34,6 @@
         //====================================
         //
         //====================================
-        function isImage(text){
-            return /^http[s]?:\/\/.*\.(jpg|jpeg|png|svg|gif)$/.test((text||''));
-        }
-
-        //====================================
-        //
-        //====================================
         function load() {
 
             ctrl.loading = true;
@@ -51,7 +44,7 @@
 
                 ctrl.messages = _(res.data).map(function(m){
                     m.date = new Date(m.date);
-                    m.media = isImage(m.text);
+                    m.type = (m.contentType||'text/').split('/')[0];
                     return m;
 
                 }).sortBy('date').value();
@@ -154,18 +147,9 @@
         //====================================
         //
         //====================================
-        function focus() {
-            $scope.$applyAsync(function(){
-                $('#text').focus();
-            });
-        }
-
-        //====================================
-        //
-        //====================================
         function selectPhoto() {
 
-            var htmlFile = $('<input type="file"  accept="image/*" style="display:none">');
+            var htmlFile = $('<input type="file"  accept="image/*;video/*" multiple style="display:none">');
 
             $("form:first").append(htmlFile);
 
@@ -181,14 +165,14 @@
         function upload(evt) {
 
             var htmlFile = evt.target;
-            var file     = htmlFile.files[0];
+            var files    = htmlFile.files;
 
-            console.log(evt);
-            console.log(file);
+            for(var i=0; i<files.length; ++i) {
 
-            post(file).then(function(){
-                $(htmlFile).remove();
-            });
+                post(files[i]).then(function(){
+                //    $(htmlFile).remove();
+                });
+            }
 
         }
 

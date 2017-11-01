@@ -83,7 +83,8 @@ function* post(req, res) {
         date: new Date(),
         from: req.auth.from,
         to:   req.auth.to,
-        text: req.body.text
+        text: req.body.text,
+        contentType: req.body.contentType || mime.lookup('.txt')
     });
 
     if(!result || !result.insertedCount)
@@ -123,11 +124,14 @@ function saveMedias(req, res, next) {
 
     let contentType = req.headers['content-type'];
 
-    if(/^image\//.test(contentType)) {
+    if(/^(image|video)\//.test(contentType)) {
 
         let streamName = `${randomString(64)}.${mime.extension(contentType)}`;
 
-        req.body = { text: `${req.protocol}://${req.get('host')}/m/${streamName}` };
+        req.body = {
+            text: `${req.protocol}://${req.get('host')}/m/${streamName}`,
+            contentType: contentType
+        };
 
         console.log(req.body);
 
