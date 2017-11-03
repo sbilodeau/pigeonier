@@ -134,14 +134,30 @@
         //====================================
         //
         //====================================
+        var scrollTimer = null;
         function autoscroll() {
-            $timeout(function(){
+
+            scrollTimer = $timeout(function(){
+
+                cancelsroll();
 
                 var q = $('#chat');
 
                 q.stop(true).animate({ scrollTop:parseInt(q.prop('scrollHeight'))+2000 }, 200);
 
-            }, 100);
+            }, 500);
+        }
+
+        //====================================
+        //
+        //====================================
+        function cancelsroll() {
+
+            if(scrollTimer) {
+                $timeout.cancel(scrollTimer);
+                scrollTimer = null;
+            }
+
         }
 
         //====================================
