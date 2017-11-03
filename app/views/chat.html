@@ -8,13 +8,15 @@ body {
     float: left;
     border-radius: 16px;
     overflow: hidden;
-    margin: 2px
+    margin: 2px;
+    display: inline-block;
 }
 
 .bubble.me {
     float: right;
 }
 
+.bubble.error,
 .bubble.text {
     border: 1px solid;
 
@@ -34,6 +36,12 @@ body {
     color:white;
 }
 
+.bubble.error {
+    border-color:darkred !important;
+    background-color:darkred !important;
+    color:white !important;
+}
+
 .bubble a {
     color:inherit;
 }
@@ -46,6 +54,14 @@ body {
 .bubble video {
     max-height:350px;
     max-width:350px;
+}
+
+.bubble.emoji {
+    font-size: 400%;
+    border:none;
+    background-color:transparent !important;
+    margin-top: 0px; margin-bottom: 0px;
+    padding-top: 0px; padding-bottom: 0px;
 }
 
 .time-tag {
@@ -68,6 +84,7 @@ body {
         <div class="col-xs-12" style="height:400px;"></div>
         <div class="col-xs-12" ng-repeat="msg in chatCtrl.messages track by msg._id">
             <bubble message="msg"></bubble>
+            <div ng-if="msg.me!=chatCtrl.messages[$index+1].me || (msg.date|moment:'calendar')!=(chatCtrl.messages[$index+1].date|moment:'calendar')" class="time-tag"  ng-class="{ me: msg.me }">{{msg.date|moment:'calendar'}}</div>
         </div>
     </div>
 
@@ -75,11 +92,12 @@ body {
         <div class="col-xs-12">
             <form ng-submit="chatCtrl.post(text); text='';" autocomplete="off">
             <div class="input-group dropup" style="position:relative">
+
                 <span class="input-group-addon btn btn-default" style="font-size:125%" data-toggle="dropdown">
-                    <i class="fa fa-bars"></i>
+                    <i class="fa fa-fw fa-bars"></i>
                 </span>
-                <span class="input-group-addon btn btn-primary" style="font-size:125%" ng-click="chatCtrl.selectPhoto()">
-                    <i class="fa fa-camera"></i>
+                <span class="input-group-addon btn btn-default" style="font-size:125%" ng-click="chatCtrl.selectPhoto()">
+                    <i class="fa fa-fw fa-camera"></i>
                 </span>
                 <ul class="dropdown-menu">
                     <li><a href="#" ng-click="chatCtrl.disconnect()"><i class="fa fa-user-times" aria-hidden="true"></i> Disconnect</a></li>
@@ -90,15 +108,14 @@ body {
                     <li><a href="#" ng-click="chatCtrl.load()"><i class="fa fa-refresh" ng-class="{'fa-spin':chatCtrl.loading}"></i> Refresh</a></li>
                 </ul>
 
-                <button id="post" class="btn btn-primary" style="position:absolute;bottom:5px;right:5px;border-radius:20px;z-index:100" type="button" onmousedown="window.keepFocus=true" ng-click="chatCtrl.post(text); text='';">
-                    <i ng-hide="chatCtrl.loading" class="fa fa-arrow-circle-up" ></i>
-                    <i ng-show="chatCtrl.loading" class="fa fa-refresh fa-spin"></i>
-                </button>
-
                 <textarea autocomplete="off" style="height:{{inputHeight()}}px" rows="1"  ng-model="text" class="form-control input-lg" onfocus="window.keepFocus=null" onblur="if(window.keepFocus) { event.target.focus(); } window.keepFocus=null;" placeholder="Last refresh {{(date|moment:'format':'H:mm:ss')||'never'}}"></textarea>
 
-            </div><!-- /input-group -->
+                <span class="btn btn-primary" style="display:table-cell;width:25px;font-size:125%" onmousedown="window.keepFocus=true" ng-click="chatCtrl.post(text); text='';">
+                    <i ng-hide="chatCtrl.loading" class="fa fa-fw fa-arrow-circle-up" ></i>
+                    <i ng-show="chatCtrl.loading" class="fa fa-fw fa-refresh fa-spin"></i>
+                </span>
 
+            </div><!-- /input-group -->
 
             </form>
         </div><!-- /.col-lg-6 -->

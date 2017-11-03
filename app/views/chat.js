@@ -39,15 +39,11 @@
             ctrl.loading = true;
 
             var msgCount = (ctrl.messages||[]).length;
+            var pendings = _.filter(ctrl.messages||[], { pending: true });
 
             return $http.get('/api/messages').then(function(res){
 
-                ctrl.messages = _(res.data).map(function(m){
-                    m.date = new Date(m.date);
-                    m.type = (m.contentType||'text/').split('/')[0];
-                    return m;
-
-                }).sortBy('date').value();
+                ctrl.messages = _(res.data).concat(pendings).sortBy('date').value();
 
                 $scope.date = new Date();
 
@@ -67,8 +63,6 @@
 
             if(!msg) return;
 
-            ctrl.loading = true;
-
             let data;
             let options = {};
 
@@ -80,13 +74,33 @@
                 options.headers = angular.extend(options.headers||{}, { 'Content-Type': msg.type });
             }
 
+            let pendingMessage = {
+                _id: randomString(24),
+                me: true,
+                date: new Date().toISOString(),
+                text: msg.type || msg,
+                contentType: msg.type || 'text/plain',
+                pending: true,
+                data: msg
+            };
+
+            ctrl.messages.push(pendingMessage);
+
+            autoscroll();
+
             return $http.post('/api/messages', data, options).then(function(){
+
+                delete pendingMessage.pending;
 
                 return load();
 
-            }).catch(on403).catch(console.error).finally(function(){
+            }).catch(on403).catch(function(err) {
 
-                delete ctrl.loading;
+                pendingMessage.error = (err||{}).data || err || 'Unknown Error';
+
+                console.error((err||{}).data || err);
+
+            }).finally(function(){
 
             });
         }
@@ -142,6 +156,20 @@
                 q.stop(true).animate({ scrollTop:parseInt(q.prop('scrollHeight'))+2000 }, 200);
 
             }, 100);
+        }
+
+        //============================================================
+        //
+        //
+        //============================================================
+        function randomString(length) {
+          var text = "";
+          var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+          for (var i = 0; i < length; i++)
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+          return text;
         }
 
         //====================================

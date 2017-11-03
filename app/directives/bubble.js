@@ -1,7 +1,8 @@
 (function() { 'use strict';
 
+	angular.module('app').directive('bubble', ['$http', '$sce', 'emoji', function($http, $sce, emoji) {
 
-	angular.module('app').directive('bubble', ['$http', '$sce', function($http, $sce) {
+        var sentenceEmojiRe = new RegExp('^'+emoji.source+"+$")
 
         return {
             restrict : 'E',
@@ -9,10 +10,33 @@
             scope: { msg: "<message" },
             link: function($scope)
             {
+                $scope.toType = toType;
                 $scope.toHtml = toHtml;
-
+                $scope.isAllEmoji = isAllEmoji;
             }
         };
+
+
+        //====================================
+        //
+        //====================================
+
+        function isAllEmoji(text) {
+
+            text = text||'';
+
+            if(!emoji.test(text))
+                return false;
+
+            return sentenceEmojiRe.test(text.replace(/\s/gm, ''));
+        }
+
+        //====================================
+        //
+        //====================================
+        function toType(contentType) {
+            return (contentType||'text/').split('/')[0];
+        }
 
         //====================================
         //
@@ -53,12 +77,5 @@
             return /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/i.test(text||'');
         }
 
-        //====================================
-        //
-        //====================================
-        function isImage(text){
-            return /^http[s]?:\/\/.*\.(jpg|jpeg|png|svg|gif)$/i.test((text||''));
-        }
 	}]);
-
 })();

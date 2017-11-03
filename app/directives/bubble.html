@@ -1,7 +1,9 @@
-<div>
-    <div class="bubble {{msg.type}}" ng-class="{ me: msg.me }">
+<div style="position:relative">
 
-        <span ng-switch="::msg.type">
+
+    <div class="bubble {{::toType(msg.contentType)}}" ng-class="{ me: msg.me, error: msg.error, emoji:isAllEmoji(msg.text) }" ng-style="{ opacity: (msg.pending? 0.5 : 1.0) }">
+
+        <span ng-switch="::toType(msg.contentType)">
             <span ng-switch-when="image">
                 <a ng-href="{{msg.text}}" target="pic">
                     <img ng-src="{{msg.text}}">
@@ -16,5 +18,5 @@
         </span>
 
     </div>
-    <div class="time-tag" ng-class="{ me: msg.me }">{{msg.date|moment:'calendar'}}</div>
+    <i ng-if="msg.pending" class="text-muted fa fa-spin fa-refresh pull-right" style="margin-top:15px"></i>
 </div>
