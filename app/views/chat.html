@@ -68,6 +68,7 @@ body {
         <div class="col-xs-12" style="height:400px;"></div>
         <div class="col-xs-12" ng-repeat="msg in chatCtrl.messages track by msg._id">
             <bubble message="msg"></bubble>
+            <div ng-if="msg.me!=chatCtrl.messages[$index+1].me || (msg.date|moment:'calendar')!=(chatCtrl.messages[$index+1].date|moment:'calendar')" class="time-tag"  ng-class="{ me: msg.me }">{{msg.date|moment:'calendar'}}</div>
         </div>
     </div>
 
