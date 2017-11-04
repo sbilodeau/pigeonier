@@ -33,6 +33,13 @@ body {
     background-color:#1085f9;
     color:white;
 }
+.bubble.emoji {
+    font-size: 400%;
+    border:none;
+    background-color:transparent !important;
+    margin-top: 0px; margin-bottom: 0px;
+    padding-top: 0px; padding-bottom: 0px;
+}
 
 .bubble a {
     color:inherit;
@@ -68,7 +75,7 @@ body {
         <div class="col-xs-12" style="height:400px;"></div>
         <div class="col-xs-12" ng-repeat="msg in chatCtrl.messages track by msg._id">
 
-            <div class="bubble {{::msg.type}}" ng-class="::{ me: msg.me }">
+            <div class="bubble {{::msg.type}}" ng-class="::{ me: msg.me, emoji: chatCtrl.isAllEmoji(msg.text) }">
                 <span ng-switch="::msg.type">
                     <span ng-switch-when="image">
                         <a ng-href="{{::msg.text}}" target="pic">

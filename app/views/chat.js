@@ -25,6 +25,7 @@
         ctrl.deleteAll  = deleteAll;
         ctrl.selectPhoto = selectPhoto;
         ctrl.toHtml = toHtml;
+        ctrl.isAllEmoji = isAllEmoji;
 
         var textarea = $("textarea")[0];
 
@@ -169,6 +170,16 @@
         //====================================
         function isUrl(text) {
             return /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/i.test(text||'');
+        }
+
+        var emojiRe = new RegExp('^('+[
+            '\ud83c[\udf00-\udfff]', // U+1F300 to U+1F3FF
+            '\ud83d[\udc00-\ude4f]', // U+1F400 to U+1F64F
+            '\ud83d[\ude80-\udeff]', // U+1F680 to U+1F6FF
+            '\\s'].join('|')+')+$');
+
+        function isAllEmoji(str) {
+            return emojiRe.test(str);
         }
 
         //====================================
