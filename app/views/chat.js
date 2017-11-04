@@ -1,8 +1,8 @@
 (function() { 'use strict';
     var app = angular.module('app');
 
-    app.controller('chatCtrl', ['$scope', '$route', '$http', '$location', '$interval', '$timeout', 'auth',
-                        function($scope,   $route,   $http,   $location,   $interval,   $timeout,   auth){
+    app.controller('chatCtrl', ['$scope', '$route', '$http', '$location', '$interval', '$timeout', '$sce', 'auth',
+                        function($scope,   $route,   $http,   $location,   $interval,   $timeout,   $sce,   auth){
 
         var ctrl = this;
         var refreshTimer = null;
@@ -24,6 +24,7 @@
         ctrl.disconnect = disconnect;
         ctrl.deleteAll  = deleteAll;
         ctrl.selectPhoto = selectPhoto;
+        ctrl.toHtml = toHtml;
 
         var textarea = $("textarea")[0];
 
@@ -134,6 +135,45 @@
         //====================================
         //
         //====================================
+        function toHtml(text) {
+
+            if(!text)
+                return text;
+
+            var lines = (text||'').split('\n');
+
+            for(var l in lines) {
+
+                var words = lines[l].split(' ');
+
+                for(var w in words) {
+
+                    if(isUrl(words[w])){
+                        var link = $('<a target="_blank">');
+
+                        link.attr('href', words[w]);
+                        link.text(words[w]);
+
+                        words[w] = $('<div>').append(link).html();
+                    }
+                }
+
+                lines[l] = words.join(' ');
+            }
+
+            return $sce.trustAsHtml(lines.join('<br>'));
+        }
+
+        //====================================
+        //
+        //====================================
+        function isUrl(text) {
+            return /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/i.test(text||'');
+        }
+
+        //====================================
+        //
+        //====================================
         var scrollTimer = null;
         function autoscroll() {
 
@@ -145,7 +185,7 @@
 
                 q.stop(true).animate({ scrollTop:parseInt(q.prop('scrollHeight'))+2000 }, 200);
 
-            }, 500);
+            }, 300);
         }
 
         //====================================
