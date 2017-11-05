@@ -122,20 +122,24 @@ function saveMedias(req, res, next) {
 
     if(/^(image|video)\//.test(contentType)) {
 
-        let streamName = `${randomString(64)}.${mime.extension(contentType)}`;
+        let name   = `${randomString(64)}.${mime.extension(contentType)}`;
+        let stream = fs.createWriteStream(path.join(media_path, name));
 
-        req.body = {
-            text: `${req.protocol}://${req.get('host')}/m/${streamName}`,
-            contentType: contentType
-        };
+        req.pipe(stream);
 
-        console.log(req.body);
+        req.on('end', ( )=> {
+            req.body = {
+                text: `${req.protocol}://${req.get('host')}/m/${name}`,
+                contentType: contentType
 
-        let filePath = path.join(media_path, `${streamName}`);
-        let data = new Buffer([]);
+            };
 
-        req.on('data',(d)=> data = Buffer.concat([data, d]));
-        req.on('end', ( )=> fs.writeFile(filePath, data, next) );
+            next();
+        });
+
+        req   .on('error', (err)=> { res.status(400).send({ message: "Error uploading file" }); console.error(err); stream.close(); });
+        stream.on('error', (err)=> { res.status(400).send({ message: "Error saing file"     }); console.error(err); stream.close(); });
+
     }
     else {
         next();
