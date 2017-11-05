@@ -1,16 +1,12 @@
 'use strict';
 const fs      = require('fs');
-const path      = require('path');
-const co      = require('co');
+const path    = require('path');
 const express = require('express');
-const cookieParser = require('cookie-parser');
-const bodyParser   = require('body-parser');
+const bodyParser = require('body-parser');
 
 if (!process.env.AUTH_PATH) throw new Error("AUTH_PATH no set");
 
 const AUTH_PATH = process.env.AUTH_PATH;
-
-function cowrap(fn) { return function (req, res, next) { co(function* () { return yield fn(req, res, next); }).catch(next); }; }
 
 //============================================================
 // CTOR

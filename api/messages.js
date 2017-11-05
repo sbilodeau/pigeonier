@@ -1,10 +1,8 @@
 'use strict';
 const path    = require('path');
 const fs      = require('fs');
-const co      = require('co');
 const moment  = require('moment');
 const express = require('express');
-const request = require('superagent');
 const bodyParser = require('body-parser');
 const mime       = require('mime-types')
 const MongoClient = require('mongodb').MongoClient;
@@ -15,8 +13,6 @@ if (!process.env.MONGO_URL)  throw new Error("MONGO_URL no set");
 
 const media_path = process.env.MEDIA_PATH;
 
-function cowrap(fn) { return function (req, res, next) { co(function* () { return yield fn(req, res, next); }).catch(next); }; }
-
 //============================================================
 // CTOR
 //
@@ -25,9 +21,9 @@ function Controller() {
 
     var router = express.Router();
 
-    router.get   ('/',    authenticate,                    cowrap(list));
-    router.post  ('/',    authenticate, saveMedias, bodyParser.json(), cowrap(post));
-    router.delete('/:id', authenticate,                    cowrap(remove));
+    router.get   ('/',    authenticate, list);
+    router.post  ('/',    authenticate, saveMedias, bodyParser.json(), post);
+    router.delete('/:id', authenticate, remove);
     return router;
 }
 //============================================================
@@ -55,15 +51,15 @@ function authenticate (req, res, next) {
 //
 //
 //============================================================
-function* list(req, res) {
+async function list(req, res) {
 
-    let db = yield getConnection();
+    let db = await getConnection();
     let dbMessages = db.collection('messages');
 
     let q = { $or: [ { from: req.auth.from }, { to: req.auth.from }], deletedBy: { $ne: req.auth.from } };
     let s = { date: 1 };
 
-    let messages = yield dbMessages.find(q).sort(s).toArray();
+    let messages = await dbMessages.find(q).sort(s).toArray();
 
     messages.forEach(m=>m.me=m.from==req.auth.from);
 
@@ -74,12 +70,12 @@ function* list(req, res) {
 //
 //
 //============================================================
-function* post(req, res) {
+async function post(req, res) {
 
-    let db = yield getConnection();
+    let db = await getConnection();
     let dbMessages = db.collection('messages');
 
-    let result = yield dbMessages.insertOne({
+    let result = await dbMessages.insertOne({
         date: new Date(),
         from: req.auth.from,
         to:   req.auth.to,
@@ -97,23 +93,23 @@ function* post(req, res) {
 //
 //
 //============================================================
-function* remove(req, res) {
+async function remove(req, res) {
 
     req.params.id = ObjectID(req.params.id);
 
-    let db = yield getConnection();
+    let db = await getConnection();
     let dbMessages = db.collection('messages');
 
     let q = { _id: req.params.id, $or: [ { from: req.auth.from }, { to: req.auth.from }], deletedBy: { $ne: req.auth.from } };
     let u = { $push: { deletedBy: req.auth.from } };
 
-    yield dbMessages.findOneAndUpdate(q, u);
+    await dbMessages.findOneAndUpdate(q, u);
 
     res.status(200).send();
 
     //cleanup
     //remove when deleted by both
-    yield dbMessages.deleteMany({ 'deletedBy.1': {$exists: true} });
+    await dbMessages.deleteMany({ 'deletedBy.1': {$exists: true} });
 }
 
 //============================================================

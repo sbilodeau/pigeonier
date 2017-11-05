@@ -10,6 +10,6 @@
     "smarttabs": true,
     "trailing" : true,
     "node"     : true,
-    "esnext"   : true,
+    "esversion": 6,
     "predef"   : ["angular", "_", "moment"]
 }
