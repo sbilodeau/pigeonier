@@ -14,10 +14,6 @@
                 $interval.cancel(refreshTimer);
         });
 
-        load().then(function(){
-            refreshTimer = $interval(load, 10000);
-        });
-
         ctrl.messages = [];
         ctrl.post     = post;
         ctrl.load     = load;
@@ -27,18 +23,27 @@
         ctrl.toHtml = toHtml;
         ctrl.isAllEmoji = isAllEmoji;
 
-        var textarea = $("textarea")[0];
+        $scope.text = "";
 
-        $scope.inputHeight = function() {
-            return Math.min(Math.max(textarea.scrollHeight,40), 120);
+        $scope.onPostOrRefresh = function (){
+            if($scope.text.trim()) {
+                post($scope.text);
+                $scope.text='';
+            }
+            else {
+                load();
+            }
         };
+
+        load();
+        refreshTimer = $interval(load, 10000);
 
         //====================================
         //
         //====================================
         function load() {
 
-            ctrl.loading = true;
+            $scope.loading = true;
 
             var msgCount = (ctrl.messages||[]).length;
 
@@ -55,10 +60,11 @@
 
             }).catch(on403).catch(console.error).finally(function(){
 
+                delete $scope.loading;
+
                 if(msgCount!=(ctrl.messages||[]).length)
                     autoscroll();
 
-                delete ctrl.loading;
             });
         }
 
@@ -69,7 +75,7 @@
 
             if(!msg) return;
 
-            ctrl.loading = true;
+            $scope.loading = true;
 
             let data;
             let options = {};
@@ -88,7 +94,7 @@
 
             }).catch(on403).catch(console.error).finally(function(){
 
-                delete ctrl.loading;
+                delete $scope.loading;
 
             });
         }
@@ -238,7 +244,7 @@
 
                 post(files[i]).then(function(){
                 //    $(htmlFile).remove();
-                });
+            });
             }
 
         }

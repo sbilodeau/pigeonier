@@ -116,7 +116,7 @@ body {
                             <li role="separator" class="divider"></li>
                             <li><a href="#" ng-click="chatCtrl.deleteAll()"><i class="fa fa-times"></i> Delete all</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#" ng-click="chatCtrl.load()"><i class="fa fa-refresh" ng-class="{'fa-spin':chatCtrl.loading}"></i> Refresh</a></li>
+                            <li><a href="#" ng-click="chatCtrl.load()"><i class="fa fa-refresh" ng-class="{'fa-spin':loading}"></i> Refresh</a></li>
                         </ul>
                     </div>
                 </span>
@@ -124,9 +124,9 @@ body {
                 <textarea autocomplete="off" rows="3" style="padding:2px"  ng-model="text" class="form-control input-lg" onfocus="window.keepFocus=null" onblur="if(window.keepFocus) { event.target.focus(); } window.keepFocus=null;" placeholder="Last refresh {{(date|moment:'format':'H:mm:ss')||'never'}}"></textarea>
 
                 <span class="input-group-addon" style="padding:0px;">
-                    <button class="btn btn-link" style="font-size:200%;padding-left:6px;padding-right:6px" onmousedown="window.keepFocus=true" ng-click="chatCtrl.post(text); text='';">
-                        <i ng-hide="chatCtrl.loading" class="fa fa-fw fa-arrow-circle-up" ></i>
-                        <i ng-show="chatCtrl.loading" class="fa fa-fw fa-refresh fa-spin"></i>
+                    <button class="btn btn-link" style="font-size:200%;padding-left:6px;padding-right:6px" onmousedown="window.keepFocus=true" ng-click="onPostOrRefresh()">
+                        <i ng-show=" text.trim() && !loading" class="fa fa-fw fa-arrow-circle-up" ></i>
+                        <i ng-show="!text.trim() ||  loading" class="fa fa-fw fa-refresh" ng-class="{'fa-spin': loading }"></i>
                     </button>
                 </span>
             </div><!-- /input-group -->
