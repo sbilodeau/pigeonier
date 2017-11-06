@@ -69,11 +69,10 @@ body {
 }
 </style>
 
-<div ng-cloak class="container">
+<div ng-cloak>
 
-    <div id="chat" class="row" style="position:fixed;top:0px;right:0px;left:0px;bottom:90px;overflow-y: scroll;-webkit-overflow-scrolling: touch;" >
-        <div class="col-xs-12" style="height:400px;"></div>
-        <div class="col-xs-12" ng-repeat="msg in chatCtrl.messages track by msg._id">
+    <div id="chat" style="padding-top:400px;position:fixed;top:0px;right:0px;left:0px;bottom:85px;overflow-y: scroll;-webkit-overflow-scrolling: touch;" >
+        <div class="clearfix" ng-repeat="msg in chatCtrl.messages track by msg._id">
 
             <div class="bubble {{::msg.type}}" ng-class="::{ me: msg.me, emoji: chatCtrl.isAllEmoji(msg.text) }">
                 <span ng-switch="::msg.type">
@@ -96,42 +95,40 @@ body {
         </div>
     </div>
 
-    <div id="input" class="row" style="position:fixed;right:0px;left:0px;bottom:2px;">
-        <div class="col-xs-12">
-            <form ng-submit="chatCtrl.post(text); text='';" autocomplete="off">
-            <div class="input-group dropup" style="position:relative">
-                <span class="input-group-addon" style="padding:0px;">
-                    <div class="btn-group-vertical btn-group-sm">
-                        <button class="btn btn-link" style="font-size:125%" ng-click="chatCtrl.selectPhoto()">
-                            <i class="fa fa-fw fa-camera"></i>
-                        </button>
-
-                        <button class="btn btn-link" style="font-size:125%" data-toggle="dropdown">
-                            <i class="fa fa-fw fa-bars"></i>
-                        </button>
-
-                        <ul class="dropdown-menu">
-                            <li><a href="#" ng-click="chatCtrl.disconnect()"><i class="fa fa-user-times" aria-hidden="true"></i> Disconnect</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#" ng-click="chatCtrl.deleteAll()"><i class="fa fa-times"></i> Delete all</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#" ng-click="chatCtrl.load()"><i class="fa fa-refresh" ng-class="{'fa-spin':loading}"></i> Refresh</a></li>
-                        </ul>
-                    </div>
-                </span>
-
-                <textarea autocomplete="off" rows="3" style="padding:2px"  ng-model="text" class="form-control input-lg" onfocus="window.keepFocus=null" onblur="if(window.keepFocus) { event.target.focus(); } window.keepFocus=null;" placeholder="Last refresh {{(date|moment:'format':'H:mm:ss')||'never'}}"></textarea>
-
-                <span class="input-group-addon" style="padding:0px;">
-                    <button class="btn btn-link" style="font-size:200%;padding-left:6px;padding-right:6px" onmousedown="window.keepFocus=true" ng-click="onPostOrRefresh()">
-                        <i ng-show=" text.trim() && !loading" class="fa fa-fw fa-arrow-circle-up" ></i>
-                        <i ng-show="!text.trim() ||  loading" class="fa fa-fw fa-refresh" ng-class="{'fa-spin': loading }"></i>
+    <div id="input" style="position:fixed;right:0px;left:0px;bottom:0px;">
+        <form ng-submit="onPostOrRefresh()" autocomplete="off">
+        <div class="input-group dropup" style="position:relative">
+            <span class="input-group-addon" style="padding:0px;">
+                <div class="btn-group-vertical btn-group-sm">
+                    <button class="btn btn-link" style="font-size:125%" ng-click="chatCtrl.selectPhoto()">
+                        <i class="fa fa-fw fa-camera"></i>
                     </button>
-                </span>
-            </div><!-- /input-group -->
 
-            </form>
-        </div><!-- /.col-lg-6 -->
+                    <button class="btn btn-link" style="font-size:125%" data-toggle="dropdown">
+                        <i class="fa fa-fw fa-bars"></i>
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        <li><a href="#" ng-click="chatCtrl.disconnect()"><i class="fa fa-user-times" aria-hidden="true"></i> Disconnect</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#" ng-click="chatCtrl.deleteAll()"><i class="fa fa-times"></i> Delete all</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#" ng-click="chatCtrl.load()"><i class="fa fa-refresh" ng-class="{'fa-spin':loading}"></i> Refresh</a></li>
+                    </ul>
+                </div>
+            </span>
+
+            <textarea autocomplete="off" style="height:85px;padding:2px"  ng-model="text" class="form-control input-lg" onfocus="window.keepFocus=null" onblur="if(window.keepFocus) { event.target.focus(); } window.keepFocus=null;" placeholder="Last refresh {{(date|moment:'format':'H:mm:ss')||'never'}}"></textarea>
+
+            <span class="input-group-addon" style="padding:0px;">
+                <button class="btn btn-link" style="font-size:200%;padding-left:6px;padding-right:6px" onmousedown="window.keepFocus=true" ng-click="onPostOrRefresh()">
+                    <i ng-show=" text.trim() && !loading" class="fa fa-fw fa-arrow-circle-up" ></i>
+                    <i ng-show="!text.trim() ||  loading" class="fa fa-fw fa-refresh" ng-class="{'fa-spin': loading }"></i>
+                </button>
+            </span>
+        </div><!-- /input-group -->
+
+        </form>
     </div>
 </div>
