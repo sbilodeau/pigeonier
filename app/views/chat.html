@@ -123,8 +123,8 @@ body {
 
             <span class="input-group-addon" style="padding:0px;">
                 <button class="btn btn-link" style="font-size:200%;padding-left:6px;padding-right:6px" onmousedown="window.keepFocus=true" ng-click="onPostOrRefresh()">
-                    <i ng-show=" text.trim() && !loading" class="fa fa-fw fa-arrow-circle-up" ></i>
-                    <i ng-show="!text.trim() ||  loading" class="fa fa-fw fa-refresh" ng-class="{'fa-spin': loading }"></i>
+                    <i ng-show="text.trim()" class="fa fa-fw fa-arrow-circle-up" ></i>
+                    <i ng-hide="text.trim()" class="fa fa-fw fa-refresh" ng-class="{'fa-spin': loading }"></i>
                 </button>
             </span>
         </div><!-- /input-group -->
