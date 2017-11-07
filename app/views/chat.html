@@ -71,7 +71,7 @@ body {
 
 <div ng-cloak>
 
-    <div id="chat" style="padding-top:400px;position:fixed;top:0px;right:0px;left:0px;bottom:85px;overflow-y: scroll;-webkit-overflow-scrolling: touch;" >
+    <div id="chat" style="padding-top:400px;position:fixed;top:0px;right:0px;left:0px;bottom:0px;padding-bottom:140px;overflow-y: scroll;-webkit-overflow-scrolling: touch;" >
         <div class="clearfix" ng-repeat="msg in chatCtrl.messages track by msg._id">
 
             <div class="bubble {{::msg.type}}" ng-class="::{ me: msg.me, emoji: chatCtrl.isAllEmoji(msg.text) }">
