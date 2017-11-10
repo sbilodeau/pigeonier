@@ -55,6 +55,16 @@ body {
     max-width:350px;
 }
 
+.bubble.pending {
+    opacity: 0.5;
+}
+
+.bubble.error {
+    border-color:darkred !important;
+    background-color:darkred !important;
+    color:white;
+}
+
 .time-tag {
     clear: both;
     font-size:70%;
@@ -71,10 +81,10 @@ body {
 
 <div ng-cloak>
 
-    <div id="chat" style="padding-top:400px;position:fixed;top:0px;right:0px;left:0px;bottom:0px;padding-bottom:140px;overflow-y: scroll;-webkit-overflow-scrolling: touch;" >
+    <div id="chat" style="padding-top:400px;position:fixed;top:0px;right:0px;left:0px;bottom:0px;overflow-y: scroll;-webkit-overflow-scrolling: touch;" >
         <div class="clearfix" ng-repeat="msg in chatCtrl.messages track by msg._id">
 
-            <div class="bubble {{::msg.type}}" ng-class="::{ me: msg.me, emoji: chatCtrl.isAllEmoji(msg.text) }">
+            <div class="bubble {{::msg.type}}" ng-class="{ me: msg.me, emoji: chatCtrl.isAllEmoji(msg.text), pending: msg.pending&&!msg.error, error: msg.error }">
                 <span ng-switch="::msg.type">
                     <span ng-switch-when="image">
                         <a ng-href="{{::msg.text}}" target="pic">
@@ -91,12 +101,20 @@ body {
 
             </div>
 
+            <div ng-if="msg.pending" class="pull-right" style="font-size: 150%;">
+                <i ng-if="!msg.error" class="fa fa-fw fa-refresh fa-spin"></i>
+                <i ng-if=" msg.error" class="fa fa-fw fa-arrow-circle-up" onmousedown="window.keepFocus=true" ng-click="msg.retry();"></i>
+            </div>
+
             <div ng-if="msg.me!=chatCtrl.messages[$index+1].me || (msg.date|moment:'calendar')!=(chatCtrl.messages[$index+1].date|moment:'calendar')" class="time-tag"  ng-class="::{ me: msg.me }">{{::msg.date|moment:'calendar'}}</div>
         </div>
+
+        <div class="clearfix" style="height:90px">&nbsp;</div>
+
     </div>
 
     <div id="input" style="position:fixed;right:0px;left:0px;bottom:0px;">
-        <form ng-submit="onPostOrRefresh()" autocomplete="off">
+        <form autocomplete="off">
         <div class="input-group dropup" style="position:relative">
             <span class="input-group-addon" style="padding:0px;">
                 <div class="btn-group-vertical btn-group-sm">

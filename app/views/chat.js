@@ -10,8 +10,10 @@
         $scope.log = console.log;
 
         $scope.$on('$destroy', function(){
-            if(refreshTimer)
+            if(refreshTimer) {
                 $interval.cancel(refreshTimer);
+                refreshTimer=null;
+            }
         });
 
         ctrl.messages = [];
@@ -36,16 +38,20 @@
         };
 
         load();
-        refreshTimer = $interval(load, 10000);
 
         //====================================
         //
         //====================================
-        function load() {
+        function load(postpone) {
+
+            if(postpone!==false) {
+                postponeRefresh();
+            }
 
             $scope.loading = true;
 
-            var msgCount = (ctrl.messages||[]).length;
+            var pendings = _.filter(ctrl.messages, { pending: true });
+            var msgCount = ctrl.messages.length - _.filter(ctrl.messages, { local: true }).length;
 
             return $http.get('/api/messages').then(function(res){
 
@@ -54,7 +60,7 @@
                     m.type = (m.contentType||'text/').split('/')[0];
                     return m;
 
-                }).sortBy('date').value();
+                }).union(pendings).sortBy('date').value();
 
                 $scope.date = new Date();
 
@@ -71,11 +77,22 @@
         //====================================
         //
         //====================================
+        function postponeRefresh() {
+
+            if(refreshTimer)
+                $interval.cancel(refreshTimer);
+
+            refreshTimer = $interval(function() { load(false); }, 10000);
+        }
+
+        //====================================
+        //
+        //====================================
         function post(msg) {
 
             if(!msg) return;
 
-            $scope.loading = true;
+            postponeRefresh();
 
             let data;
             let options = {};
@@ -88,15 +105,49 @@
                 options.headers = angular.extend(options.headers||{}, { 'Content-Type': msg.type });
             }
 
+            let pendingMessage = {
+                _id: new Date().toISOString(),
+                pending: true,
+                local: true,
+                me: true,
+                date: new Date(),
+                text: msg.type ? '['+msg.type+']' : msg,
+                type: 'text',
+                rawMessage : msg,
+                retry: function() { repost(this); }
+            };
+
+            ctrl.messages.push(pendingMessage);
+
+            autoscroll();
+
             return $http.post('/api/messages', data, options).then(function(){
 
-                return load();
+                delete pendingMessage.pending;
 
-            }).catch(on403).catch(console.error).finally(function(){
+            }).catch(on403).catch(function(err){
 
-                delete $scope.loading;
+                pendingMessage.error = err;
+                console.error(err);
+
+            }).finally(function(){
+
+                load();
 
             });
+        }
+
+        //====================================
+        //
+        //====================================
+        function repost(msg) {
+            
+            if(!msg || !msg.rawMessage)
+                return;
+
+            ctrl.messages = _.without(ctrl.messages, msg);
+
+            post(msg.rawMessage);
         }
 
         //====================================
