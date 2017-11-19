@@ -84,8 +84,8 @@ body {
     <div id="chat" style="padding-top:400px;position:fixed;top:0px;right:0px;left:0px;bottom:0px;overflow-y: scroll;-webkit-overflow-scrolling: touch;" >
         <div class="clearfix" ng-repeat="msg in chatCtrl.messages track by msg._id">
 
-            <div class="bubble {{::msg.type}}" ng-class="{ me: msg.me, emoji: chatCtrl.isAllEmoji(msg.text), pending: msg.pending&&!msg.error, error: msg.error }">
-                <span ng-switch="::msg.type">
+            <div class="bubble" ng-class="{ me: msg.me, text: msg.contentType=='text/plain', emoji: isAllEmoji(msg.text), pending: msg.pending&&!msg.error, error: msg.error }">
+                <span ng-switch="::(msg.contentType||'text/plain').split('/')[0]">
                     <span ng-switch-when="image">
                         <a ng-href="{{::msg.text}}" target="pic">
                             <img ng-src="{{::msg.text}}">
@@ -96,7 +96,7 @@ body {
                             <source ng-src="{{::msg.text}}">
                         </video>
                     </span>
-                    <span ng-switch-default ng-bind-html="::chatCtrl.toHtml(msg.text)"></span>
+                    <span ng-switch-default ng-bind-html="::toHtml(msg.text)"></span>
                 </span>
 
             </div>
@@ -137,7 +137,7 @@ body {
                 </div>
             </span>
 
-            <textarea autocomplete="off" style="height:85px;padding:2px"  ng-model="text" class="form-control input-lg" onfocus="window.keepFocus=null" onblur="if(window.keepFocus) { event.target.focus(); } window.keepFocus=null;" placeholder="Last refresh {{(date|moment:'format':'H:mm:ss')||'never'}}"></textarea>
+            <textarea autocomplete="off" style="height:85px;padding:2px"  ng-model="text" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 300, 'blur': 0 } }" class="form-control input-lg" onfocus="window.keepFocus=null" onblur="if(window.keepFocus) { event.target.focus(); } window.keepFocus=null;" placeholder="Last refresh {{(date|moment:'format':'H:mm:ss')||'never'}}"></textarea>
 
             <span class="input-group-addon" style="padding:0px;">
                 <button class="btn btn-link" style="font-size:200%;padding-left:6px;padding-right:6px" onmousedown="window.keepFocus=true" ng-click="onPostOrRefresh()">

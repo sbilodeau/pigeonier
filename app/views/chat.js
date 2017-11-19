@@ -1,8 +1,8 @@
 (function() { 'use strict';
     var app = angular.module('app');
 
-    app.controller('chatCtrl', ['$scope', '$route', '$http', '$location', '$interval', '$timeout', '$sce', 'auth',
-                        function($scope,   $route,   $http,   $location,   $interval,   $timeout,   $sce,   auth){
+    app.controller('chatCtrl', ['$scope', '$route', '$http', '$location', '$interval', '$timeout', '$sce', 'auth', '$q',
+                        function($scope,   $route,   $http,   $location,   $interval,   $timeout,   $sce,   auth,   $q){
 
         var ctrl = this;
         var refreshTimer = null;
@@ -22,8 +22,9 @@
         ctrl.disconnect = disconnect;
         ctrl.deleteAll  = deleteAll;
         ctrl.selectPhoto = selectPhoto;
-        ctrl.toHtml = toHtml;
-        ctrl.isAllEmoji = isAllEmoji;
+
+        $scope.toHtml = toHtml;
+        $scope.isAllEmoji = isAllEmoji;
 
         $scope.text = "";
 
@@ -55,12 +56,7 @@
 
             return $http.get('/api/messages').then(function(res){
 
-                ctrl.messages = _(res.data).map(function(m){
-                    m.date = new Date(m.date);
-                    m.type = (m.contentType||'text/').split('/')[0];
-                    return m;
-
-                }).union(pendings).sortBy('date').value();
+                ctrl.messages = _(res.data).union(pendings).sortBy('date').value();
 
                 $scope.date = new Date();
 
@@ -92,56 +88,67 @@
 
             if(!msg) return;
 
-            postponeRefresh();
+            let pendingMessage;
 
-            let data;
-            let options = {};
+            return $q.when(msg).then(function(){
 
-            if(typeof(msg)=="string") {
-                data = { text: msg };
-            }
-            else if(msg.type) {
-                data = msg;
-                options.headers = angular.extend(options.headers||{}, { 'Content-Type': msg.type });
-            }
+                postponeRefresh();
 
-            let pendingMessage = {
-                _id: new Date().toISOString(),
-                pending: true,
-                local: true,
-                me: true,
-                date: new Date(),
-                text: msg.type ? '['+msg.type+']' : msg,
-                type: 'text',
-                rawMessage : msg,
-                retry: function() { repost(this); }
-            };
+                pendingMessage = {
+                    _id:  new Date().toISOString(),
+                    date: new Date().toISOString(),
+                    text: msg.type ? '['+msg.type+']' : msg,
+                    contentType: 'text/plain',
+                    me: true,
+                    local: true,
+                    pending: true,
+                    rawMessage : msg,
+                    retry: function() { repost(this); }
+                };
 
-            ctrl.messages.push(pendingMessage);
+                ctrl.messages.push(pendingMessage);
 
-            autoscroll();
+                autoscroll();
 
-            return $http.post('/api/messages', data, options).then(function(){
+                let data;
+                let options = {};
 
+                if(typeof(msg)=="string") {
+                    data = { text: msg };
+                }
+                else if(msg.type) {
+                    data = msg;
+                    options.headers = angular.extend(options.headers||{}, { 'Content-Type': msg.type });
+                }
+                else {
+                    throw new Error('Unknow message type'+msg);
+                }
+
+                return $http.post('/api/messages', data, options);
+
+            }).then(function(res){
+
+                delete pendingMessage.local;
                 delete pendingMessage.pending;
+                delete pendingMessage.error;
+                delete pendingMessage.rawMessage;
+                delete pendingMessage.retry;
+
+                _.extend(pendingMessage, res.data, { me: true });
 
             }).catch(on403).catch(function(err){
 
                 pendingMessage.error = err;
                 console.error(err);
 
-            }).finally(function(){
-
-                load();
-
-            });
+            }).finally(load);
         }
 
         //====================================
         //
         //====================================
         function repost(msg) {
-            
+
             if(!msg || !msg.rawMessage)
                 return;
 
@@ -283,9 +290,9 @@
 
                     var files = evt.target.files;
 
-            for(var i=0; i<files.length; ++i) {
+                    for(var i=0; i<files.length; ++i) {
                         post(files[i]);
-            }
+                    }
                 });
             });
 
