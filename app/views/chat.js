@@ -277,27 +277,19 @@
 
             $("form:first").append(htmlFile);
 
-            htmlFile.change(upload);
+            htmlFile.change(function(evt){
 
-            htmlFile.click();
-        }
+                $scope.$applyAsync(function(){
 
-
-        //====================================
-        //
-        //====================================
-        function upload(evt) {
-
-            var htmlFile = evt.target;
-            var files    = htmlFile.files;
+                    var files = evt.target.files;
 
             for(var i=0; i<files.length; ++i) {
-
-                post(files[i]).then(function(){
-                //    $(htmlFile).remove();
-            });
+                        post(files[i]);
             }
+                });
+            });
 
+            htmlFile.click();
         }
 
         //====================================
