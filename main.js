@@ -24,6 +24,7 @@ app.use('/api/messages',       require('./api/messages')());
 
 app.get('/',     (req, res)=>res.sendFile(__dirname + '/app/template.html'));
 app.get('/chat', (req, res)=>res.sendFile(__dirname + '/app/template.html'));
+app.get('/robots.txt', (req, res)=>res.sendFile(__dirname + '/app/robots.txt'));
 
 
 // START SERVER(s)
@@ -51,6 +52,8 @@ if(process.env.CERT_PATH) {
 
     allWellknown(httpApp);
 
+    httpApp.get('/robots.txt', (req, res)=>res.sendFile(__dirname + '/app/robots.txt'));
+
     httpApp.use(function (req, res) { // Redirect to SSL
         res.writeHead(301, { "Location": "https://" + req.headers.host + req.url });
         res.end();
@@ -74,4 +77,8 @@ function allWellknown(app) {
 
 function allCatchAll(app) {
     app.all('/*', (req, res)=>res.status(404).send());
+}
+
+function robots(app) {
+    app.get('/robots.txt',     (req, res)=>res.sendFile(__dirname + '/app/robots.txt'));
 }
