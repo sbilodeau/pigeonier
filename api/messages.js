@@ -57,7 +57,7 @@ async function list(req, res) {
     let dbMessages = db.collection('messages');
 
     let q = { $or: [ { from: req.auth.from }, { to: req.auth.from }], deletedBy: { $ne: req.auth.from } };
-    let s = { date: 1 };
+    let s = { date: -1 };
     let l = parseInt(req.query.l || 0) || 0;
 
     let messages = dbMessages.find(q).sort(s);
