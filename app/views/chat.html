@@ -135,8 +135,8 @@ body {
                         <li>
                             <a href="#" >
                                 <i ng-hide="chatCtrl.limit" class="fa fa-square-o"></i>
-                                <i ng-show="chatCtrl.limit" class="fa fa-check-square-o" ng-click="chatCtrl.limit=undefined"></i> Limit
-                                <input type="number" pattern="\d*" ng-model="chatCtrl.limit" style="width: 75px" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 600, 'blur': 0 } }">
+                                <i ng-show="chatCtrl.limit" class="fa fa-check-square-o" ng-click="chatCtrl.limit=undefined; chatCtrl.load()"></i> Limit
+                                <input type="number" pattern="\d*" ng-model="chatCtrl.limit" style="width: 75px" ng-change="chatCtrl.load()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 600, 'blur': 0 } }">
                             </a>
                             
                         </li>
