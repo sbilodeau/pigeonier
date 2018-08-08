@@ -19,7 +19,7 @@
         ctrl.messages = [];
         ctrl.post     = post;
         ctrl.load     = load;
-        ctrl.limit    = 75;
+        ctrl.limit    = 100;
         ctrl.disconnect = disconnect;
         ctrl.deleteAll  = deleteAll;
         ctrl.selectPhoto = selectPhoto;
