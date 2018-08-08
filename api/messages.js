@@ -58,8 +58,17 @@ async function list(req, res) {
 
     let q = { $or: [ { from: req.auth.from }, { to: req.auth.from }], deletedBy: { $ne: req.auth.from } };
     let s = { date: 1 };
+    let l = parseInt(req.query.l || 0) || 0;
 
-    let messages = await dbMessages.find(q).sort(s).toArray();
+    let messages;
+    
+    messages = dbMessages.find(q);
+
+    if(q) messages = dbMessages.find (q);
+    if(l) messages = dbMessages.limit(l);
+    if(s) messages = dbMessages.sort (s);
+
+    messages = await messages.toArray();
 
     messages.forEach(m=>m.me=m.from==req.auth.from);
 

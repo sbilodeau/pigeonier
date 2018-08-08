@@ -54,7 +54,7 @@
             var pendings = _.filter(ctrl.messages, { pending: true });
             var msgCount = ctrl.messages.length - _.filter(ctrl.messages, { local: true }).length;
 
-            return $http.get('/api/messages').then(function(res){
+            return $http.get('/api/messages', { params: { l: ctrl.limit } }).then(function(res){
 
                 ctrl.messages = _(res.data).union(pendings).sortBy('date').value();
 

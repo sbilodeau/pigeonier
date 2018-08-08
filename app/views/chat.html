@@ -1,8 +1,6 @@
 
 <style>
 body {
-    /*background-image: url('https://static.pexels.com/photos/34950/pexels-photo.jpg');*/
-    /*background-size:cover;*/
 }
 .bubble {
     float: left;
@@ -132,7 +130,13 @@ body {
                         <li role="separator" class="divider"></li>
                         <li><a href="#" ng-click="chatCtrl.deleteAll()"><i class="fa fa-times"></i> Delete all</a></li>
                         <li role="separator" class="divider"></li>
+                        <li role="separator" class="divider"></li>
                         <li><a href="#" ng-click="chatCtrl.load()"><i class="fa fa-refresh" ng-class="{'fa-spin':loading}"></i> Refresh</a></li>
+                        <li><a href="#" ng-click="chatCtrl.limit = chatCtrl.limit ? 0 : 75">
+                                <i ng-hide="chatCtrl.limit" class="fa fa-square-o"></i>
+                                <i ng-show="chatCtrl.limit" class="fa fa-check-square-o"></i> Limit
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </span>
