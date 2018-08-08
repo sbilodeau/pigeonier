@@ -136,7 +136,7 @@ body {
                             <a href="#" >
                                 <i ng-hide="chatCtrl.limit" class="fa fa-square-o"></i>
                                 <i ng-show="chatCtrl.limit" class="fa fa-check-square-o" ng-click="chatCtrl.limit=undefined"></i> Limit
-                                <input type="number" ng-model="chatCtrl.limit" style="width: 75px">
+                                <input type="number" pattern="\d*" ng-model="chatCtrl.limit" style="width: 75px" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 600, 'blur': 0 } }">
                             </a>
                             
                         </li>
@@ -144,7 +144,7 @@ body {
                 </div>
             </span>
 
-            <textarea autocomplete="off" style="height:85px;padding:2px"  ng-model="text" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 300, 'blur': 0 } }" class="form-control input-lg" onfocus="window.keepFocus=null" onblur="if(window.keepFocus) { event.target.focus(); } window.keepFocus=null;" placeholder="Last refresh {{(date|moment:'format':'H:mm:ss')||'never'}}"></textarea>
+            <textarea autocomplete="off" style="height:85px;padding:2px"  ng-model="text" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 600, 'blur': 0 } }" class="form-control input-lg" onfocus="window.keepFocus=null" onblur="if(window.keepFocus) { event.target.focus(); } window.keepFocus=null;" placeholder="Last refresh {{(date|moment:'format':'H:mm:ss')||'never'}}"></textarea>
 
             <span class="input-group-addon" style="padding:0px;">
                 <button class="btn btn-link" style="font-size:200%;padding-left:6px;padding-right:6px" onmousedown="window.keepFocus=true" ng-click="onPostOrRefresh()">
