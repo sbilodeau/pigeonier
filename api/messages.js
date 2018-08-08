@@ -60,13 +60,11 @@ async function list(req, res) {
     let s = { date: 1 };
     let l = parseInt(req.query.l || 0) || 0;
 
-    let messages;
-    
-    messages = dbMessages.find(q);
+    let messages = dbMessages.find(q).sort(s);
 
-    if(q) messages = dbMessages.find (q);
-    if(l) messages = dbMessages.limit(l);
-    if(s) messages = dbMessages.sort (s);
+    if(l) {
+        messages = messages.limit(l);
+    }
 
     messages = await messages.toArray();
 
